@@ -32,11 +32,15 @@ namespace GospelStoriesApi
                     .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
                     .AddNewtonsoftJson(opt => opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             services.AddDbContext<GospelStoryDBContext>(options => options.UseSqlServer(Configuration.GetConnectionString("GospelStoryDB")));
+            services.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseCors(options => options.WithOrigins("http://127.0.0.1:5501/yytest.html")
+                .AllowAnyMethod()
+                .AllowAnyHeader());
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

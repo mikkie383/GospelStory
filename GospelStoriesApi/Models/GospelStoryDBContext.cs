@@ -79,7 +79,7 @@ namespace GospelStoriesApi.Models
 
             modelBuilder.Entity<Testimony>(entity =>
             {
-                entity.HasNoKey();
+                entity.Property(e => e.TestimonyId).HasColumnName("TestimonyID");
 
                 entity.Property(e => e.ContentText)
                     .IsRequired()
@@ -90,9 +90,11 @@ namespace GospelStoriesApi.Models
 
                 entity.Property(e => e.PostDate).HasColumnType("date");
 
-                entity.Property(e => e.TestimonyId)
-                    .HasColumnName("TestimonyID")
-                    .ValueGeneratedOnAdd();
+                entity.HasOne(d => d.GospelUser)
+                    .WithMany(p => p.Testimony)
+                    .HasForeignKey(d => d.GospelUserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Testimony_GospelUser");
             });
 
             OnModelCreatingPartial(modelBuilder);

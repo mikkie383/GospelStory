@@ -12,6 +12,7 @@ namespace GospelStoriesApi.Models
         public GospelUser()
         {
             GospelSharing = new HashSet<GospelSharing>();
+            Testimony = new HashSet<Testimony>();
         }
 
         public int GospelUserId { get; set; }
@@ -20,5 +21,6 @@ namespace GospelStoriesApi.Models
         public string Passcode { get; set; }
 
         public virtual ICollection<GospelSharing> GospelSharing { get; set; }
+        public virtual ICollection<Testimony> Testimony { get; set; }
     }
 }
