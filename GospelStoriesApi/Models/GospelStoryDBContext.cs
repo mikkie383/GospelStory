@@ -19,49 +19,80 @@ namespace GospelStoriesApi.Models
         {
         }
 
-        public virtual DbSet<GospelPost> GospelPost { get; set; }
+        public virtual DbSet<GospelSharing> GospelSharing { get; set; }
         public virtual DbSet<GospelUser> GospelUser { get; set; }
+        public virtual DbSet<Testimony> Testimony { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=DESKTOP-PNDQ3LC;Database=GospelStoryDB;Trusted_Connection=True;");
+                optionsBuilder.UseSqlServer("Name=GospelStoryDB");
             }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<GospelPost>(entity =>
+            modelBuilder.Entity<GospelSharing>(entity =>
             {
-                entity.Property(e => e.GospelPostId).HasColumnName("GospelPostID");
+                entity.HasKey(e => e.ShareId);
 
-                entity.Property(e => e.GospelPostDate).HasColumnType("date");
-
-                entity.Property(e => e.GospelPostText)
-                    .HasMaxLength(1000)
-                    .IsUnicode(false);
+                entity.Property(e => e.ShareId).HasColumnName("ShareID");
 
                 entity.Property(e => e.GospelUserId).HasColumnName("GospelUserID");
 
+                entity.Property(e => e.ShareContent)
+                    .IsRequired()
+                    .HasMaxLength(1000)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ShareDate).HasColumnType("date");
+
                 entity.HasOne(d => d.GospelUser)
-                    .WithMany(p => p.GospelPost)
+                    .WithMany(p => p.GospelSharing)
                     .HasForeignKey(d => d.GospelUserId)
-                    .HasConstraintName("FK_GospelPost_GospelUser");
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_GospelSharing_GospelUser");
             });
 
             modelBuilder.Entity<GospelUser>(entity =>
             {
                 entity.Property(e => e.GospelUserId).HasColumnName("GospelUserID");
 
-                entity.Property(e => e.GospelFirstName)
-                    .HasMaxLength(50)
+                entity.Property(e => e.Email)
+                    .IsRequired()
+                    .HasColumnName("email")
+                    .HasMaxLength(150)
                     .IsUnicode(false);
 
-                entity.Property(e => e.GospelLastName)
-                    .HasMaxLength(50)
+                entity.Property(e => e.Passcode)
+                    .IsRequired()
+                    .HasColumnName("passcode")
+                    .HasMaxLength(150)
                     .IsUnicode(false);
+
+                entity.Property(e => e.UserName)
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<Testimony>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.Property(e => e.ContentText)
+                    .IsRequired()
+                    .HasMaxLength(1000)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.GospelUserId).HasColumnName("GospelUserID");
+
+                entity.Property(e => e.PostDate).HasColumnType("date");
+
+                entity.Property(e => e.TestimonyId)
+                    .HasColumnName("TestimonyID")
+                    .ValueGeneratedOnAdd();
             });
 
             OnModelCreatingPartial(modelBuilder);

@@ -11,13 +11,14 @@ namespace GospelStoriesApi.Models
     {
         public GospelUser()
         {
-            GospelPost = new HashSet<GospelPost>();
+            GospelSharing = new HashSet<GospelSharing>();
         }
 
         public int GospelUserId { get; set; }
-        public string GospelLastName { get; set; }
-        public string GospelFirstName { get; set; }
+        public string UserName { get; set; }
+        public string Email { get; set; }
+        public string Passcode { get; set; }
 
-        public virtual ICollection<GospelPost> GospelPost { get; set; }
+        public virtual ICollection<GospelSharing> GospelSharing { get; set; }
     }
 }
